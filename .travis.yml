@@ -1,0 +1,44 @@
+language: python
+cache: pip
+
+python:
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - pypy
+  - pypy3
+
+matrix:
+  include:
+    - language: generic
+      python: 2.7
+      os: osx
+    - language: generic
+      python: 3.3
+      os: osx
+    - language: generic
+      python: 3.5
+      os: osx
+  allow_failures:
+    - python: pypy
+    - python: pypy3
+
+install:
+  - if [[ $TRAVIS_OS_NAME == osx ]]; then brew install openssl; fi
+  - if [[ $TRAVIS_OS_NAME == osx ]]; then export LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include"; fi
+  - virtualenv --python=python env
+  - source env/bin/activate
+  - pip install coverage flake8 wheel
+  - python setup.py bdist_wheel
+  - pip install dist/*.whl
+
+script:
+  - source env/bin/activate
+  - flake8 encryptxml --ignore E501,E301,E302,F841,E226,E401
+  - coverage run --source=encryptxml ./test/test.py
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+sudo: false
