@@ -12,7 +12,7 @@ setup(
     description='Python XML Encryption library',
     long_description=open('README.rst').read(),
     install_requires=[
-        'signxml >= 1.0.1'
+        'signxml >= 2.0.0'
     ],
     packages=find_packages(exclude=['test']),
     platforms=['MacOS X', 'Posix'],
